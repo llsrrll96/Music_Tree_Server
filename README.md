@@ -1,14 +1,15 @@
 # Music_Tree_Server
 
-##Rest API Server
+## Rest API Server
 
-###Data Protocol
+### Data Protocol
     data = {
                 "type" : "1",
                 "step": "2",
                 "q":"2번 질문입니다.",
                 'socketId': session['socketId']
             }
+            
 #### 가사 검색 요청  
     data = {
                 "type" : "2"
