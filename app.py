@@ -4,7 +4,6 @@ import os
 import question, result
 from flask import Flask, render_template, request, session
 from flask_socketio import SocketIO, send, emit, join_room,leave_room
-from lyrics_find import LyricsFind
 from db_connector import DbConnector
 
 
@@ -14,22 +13,6 @@ app.debug = True
 app.host = 'localhost'
 
 socketIo = SocketIO(app, cors_allowed_origins="*")
-
-user_no = 1
-
-@socketIo.on('start', namespace='/prediction')
-def connect(v):
-    print('start')
-    global user_no
-    if 'session' in session and 'user-id' in session:
-        pass
-    else:
-        session['session'] = os.urandom(24)
-        session['username'] = 'user' + str(user_no)
-        user_no += 1
-    # emit("response", {'data': 'Connected', 'username': session['username']})
-
-    emit("response", question.firstQuestion(session['username']), broadcast=False)
 
 @socketIo.on('disconnect', namespace='/prediction')
 def disconnect():
@@ -49,22 +32,23 @@ def request(ans):
     # 데이터 보내는 함수 생성
     ## 프로토콜 type 1: 일반질문, 2: 가사 ,3: 결과
     data = {
-                "type" : "3",
-                "songId" : Result.getSongId()
+                "type" : "2"
             }
-    print(data)
     # data = {
     #             "type" : "1",
     #             "step": "2",
     #             "q":"2번 질문입니다.",
-    #             'username': session['username']
+    #             'socketId': session['socketId']
     #         }
-
+    # data = {
+    #             "type" : "2"
+    #         }
     # data = {
     #             "type" : "3",
     #             "songId" : Result.getSongId()
     #         }
 
+    print(data) #보내는 데이터
     emit("answer", data, broadcast=False)
     data.clear()
 
