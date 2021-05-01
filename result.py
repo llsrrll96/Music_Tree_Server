@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 def getSongInfo():
     #db 를 통해서 정보를 가져온다.
     title= 'title'

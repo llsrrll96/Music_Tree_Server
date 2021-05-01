@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 def firstQuestion(socketId):
     data = {
                 "step": "1",

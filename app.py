@@ -1,9 +1,13 @@
+# -*- coding: utf-8 -*-
+
 import os
-import question, Result
+import question, result
 from flask import Flask, render_template, request, session
 from flask_socketio import SocketIO, send, emit, join_room,leave_room
+from lyrics_find import LyricsFind
+from db_connector import DbConnector
 
-#Flask 객체 인스턴스 생성
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'mysecret'
 app.debug = True
@@ -15,7 +19,7 @@ user_no = 1
 
 @socketIo.on('start', namespace='/prediction')
 def connect(v):
-    print('시작 전')
+    print('start')
     global user_no
     if 'session' in session and 'user-id' in session:
         pass
@@ -96,7 +100,7 @@ def request(ans):
 
 #https://flask-socketio.readthedocs.io/en/latest/
 if __name__=="__main__":
-  socketIo.run(app)
+	socketIo.run(app)
 
   # app.run(debug=True)
   # host 등을 직접 지정하고 싶다면
