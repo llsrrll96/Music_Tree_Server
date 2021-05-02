@@ -28,7 +28,7 @@ def song_delete(input):
 
 
 def song_inquiry(input):
-    # input = 조회할 노래 시작점 - 1 / 시작점부터 50곡 불러옴
+    # input = 조회할 노래 시작점 ( 배열 인덱스 ) / 시작점부터 50곡 불러옴
     db = db_connector.DbConnector()
     db.connect()
     try:
@@ -36,7 +36,7 @@ def song_inquiry(input):
             sql = "SELECT * FROM music_tree.song limit %s, 50;"
             cursor.execute(sql, input)
             result = cursor.fetchall()
-            print(result)
+            return result
     finally:
         db.close()
 
