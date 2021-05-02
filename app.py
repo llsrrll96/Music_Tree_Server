@@ -2,7 +2,7 @@
 
 import os
 import question, result
-from flask import Flask, render_template, request, session
+from flask import Flask, render_template, request, session, jsonify
 from flask_socketio import SocketIO, send, emit, join_room,leave_room
 from db_connector import DbConnector
 
@@ -13,6 +13,57 @@ app.debug = True
 app.host = 'localhost'
 
 socketIo = SocketIO(app, cors_allowed_origins="*")
+
+## 관리자 #####################################################
+
+@app.route("/")
+def main():
+    return render_template("index.html")
+
+# 접속하는 url
+@app.route('/song-info')
+def song():
+    # db 조회
+
+    # test 더미데이터
+    data = [
+        {
+            "song_id" : 1,
+            "title" : "song_title",
+            "artist" : "song_artist",
+            "album" : "song_album",
+            "ost" : 2,
+            "rel_date" : "2020-12-12",
+            "genre" : 3,
+            "group_type" : 4,
+            "gender" : 5,
+            "feat" : "피쳐링",
+            "relevance" : "관련성",
+            "mood" : "분위기",
+            "lyrics" : "가사",
+            "words" : ""
+         },
+        {
+            "song_id": 2,
+            "title": "song_title",
+            "artist": "song_artist",
+            "album": "song_album",
+            "ost": 2,
+            "rel_date": "2020-12-12",
+            "genre": 3,
+            "group_type": 4,
+            "gender": 5,
+            "feat": "피쳐링",
+            "relevance": "관련성",
+            "mood": "분위기",
+            "lyrics": "가사",
+            "words": ""
+        }
+    ]
+    print(data)
+    return jsonify(data)
+
+## 소켓 #####################################################
 
 @socketIo.on('disconnect', namespace='/prediction')
 def disconnect():
@@ -53,9 +104,6 @@ def request(ans):
     data.clear()
 
     return None
-
-
-
 
 # @app.route('/',methods=('GET', 'POST')) # 접속하는 url
 # def index():
