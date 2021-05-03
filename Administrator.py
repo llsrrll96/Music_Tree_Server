@@ -1,6 +1,3 @@
-from flask import Flask, request, jsonify
-import requests
-
 from Music_Tree_Server import db_connector
 
 
