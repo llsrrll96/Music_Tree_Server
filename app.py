@@ -154,7 +154,7 @@ def admin_modify():
 def admin_delete():
     input = request.get_json()
     id = input.get("id")
-    status = Administrator.song_delete(id)
+    status = Administrator.song_delete(int(id))
     if status == 1:
         status = "yes"
     else:
