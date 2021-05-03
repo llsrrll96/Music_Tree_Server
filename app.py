@@ -230,7 +230,7 @@ def requestl(ans):
 
 #https://flask-socketio.readthedocs.io/en/latest/
 if __name__=="__main__":
-	socketIo.run(app,host='0.0.0.0',port=5000)
+	socketIo.run(app)
 
   # app.run(debug=True)
   # host 등을 직접 지정하고 싶다면
