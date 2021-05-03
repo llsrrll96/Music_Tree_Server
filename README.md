@@ -45,8 +45,8 @@
 #### 노래 조회
 ```
 - input 
-     input = { "index" : 1 } 
-     index = { 1 ,51 ,101 ,,, }
+     /song-info?index=1
+     index = 1 ,51 ,101 ,,,
 - output
      data = [
         {
@@ -94,8 +94,9 @@
 
 #### 노래 삭제
 ```
-- input
-    input = { "id" : 1 }
+- input 
+배열 형태
+    input = { "id" : 1 } 
 - output
     data = { "result" : "yes" }
 ```
@@ -103,10 +104,7 @@
 #### 노래 추가
 ```
 - input
-    input = {
-                "page": 1,
-                "grNumber : 1
-            }
+    쿼리 스트링
     page = 1 ~ 10 , grNumber = 1 ~ 8 
 - output
     data = { "result" : "yes" } 
