@@ -14,17 +14,24 @@
 ```
             
 #### 가사 검색 요청
+```
 - output
     data = {
                 "type" : "2"
             }
+```
+
 #### 결과
+```
 - output
     data = {
                 "type" : "3",
                 "songId" : Result.getSongInfo()
             }
+```
+
 #### 노래 결과 정보 (예측 끝)
+```
 - output
     song = {
         "title" : title,
@@ -33,12 +40,14 @@
         "genre" : genre,
         "lyric" : lyric
     }
-    
- #### 노래 조회
- - input 
+```
+
+#### 노래 조회
+```
+- input 
      input = { "index" : 1 } 
      index = { 1 ,51 ,101 ,,, }
- - output
+- output
      data = [
         {
             "id" : 1,
@@ -73,20 +82,26 @@
             "words": ""
         }
     ]
+```
 
 #### 노래 수정
+```
 - input
     input = {"1" : {"lyrics" : {"value" : "가사"}}}
 - output
     data = { "result" : "yes" } 
-    
+```
+
 #### 노래 삭제
+```
 - input
     input = { "id" : 1 }
 - output
     data = { "result" : "yes" }
+```
 
 #### 노래 추가
+```
 - input
     input = {
                 "page": 1,
@@ -96,3 +111,4 @@
 - output
     data = { "result" : "yes" } 
             { "result" : "no" }
+```
