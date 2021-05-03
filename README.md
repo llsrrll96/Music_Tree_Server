@@ -3,6 +3,7 @@
 ## Rest API Server
 
 ### Data Protocol
+```
 - output
     data = {
                 "type" : "1",
@@ -10,6 +11,7 @@
                 "q":"2번 질문입니다.",
                 'socketId': session['socketId']
             }
+```
             
 #### 가사 검색 요청
 - output
