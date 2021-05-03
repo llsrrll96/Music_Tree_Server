@@ -4,14 +4,17 @@ import os
 import question, result
 from flask import Flask, render_template, request, session, jsonify
 from flask_socketio import SocketIO, send, emit, join_room,leave_room
+from flask_cors import CORS
 from db_connector import DbConnector
-
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'mysecret'
 app.debug = True
 app.host = 'localhost'
 
+cors = CORS(app, resources={
+    r"/song-info" : {"origin": "*"}
+})
 socketIo = SocketIO(app, cors_allowed_origins="*")
 
 ## 관리자 #####################################################
@@ -21,14 +24,15 @@ def main():
     return render_template("index.html")
 
 # 접속하는 url
-@app.route('/song-info')
+@app.route('/song-info', methods=["GET"])
 def song():
+
     # db 조회
 
     # test 더미데이터
     data = [
         {
-            "song_id" : 1,
+            "id" : 1,
             "title" : "song_title",
             "artist" : "song_artist",
             "album" : "song_album",
@@ -41,10 +45,10 @@ def song():
             "relevance" : "관련성",
             "mood" : "분위기",
             "lyrics" : "가사",
-            "words" : ""
+            "words" : "",
          },
         {
-            "song_id": 2,
+            "id": 2,
             "title": "song_title",
             "artist": "song_artist",
             "album": "song_album",
@@ -57,6 +61,70 @@ def song():
             "relevance": "관련성",
             "mood": "분위기",
             "lyrics": "가사",
+            "words": ""
+        },
+        {
+            "id": 3,
+            "title": "song_title",
+            "artist": "song_artist",
+            "album": "song_album",
+            "ost": 2,
+            "rel_date": "2020-12-12",
+            "genre": 3,
+            "group_type": 4,
+            "gender": 5,
+            "feat": "피쳐링",
+            "relevance": "관련성",
+            "mood": "분위기",
+            "lyrics": "가사",
+            "words": ""
+        },
+        {
+            "id": 4,
+            "title": "song_title",
+            "artist": "song_artist",
+            "album": "song_album",
+            "ost": 2,
+            "rel_date": "2020-12-12",
+            "genre": 3,
+            "group_type": 4,
+            "gender": 5,
+            "feat": "피쳐링",
+            "relevance": "관련성",
+            "mood": "분위기",
+            "lyrics": "가사",
+            "words": ""
+        },
+        {
+            "id": 5,
+            "title": "song_title",
+            "artist": "song_artist",
+            "album": "song_album",
+            "ost": 2,
+            "rel_date": "2020-12-12",
+            "genre": 3,
+            "group_type": 4,
+            "gender": 5,
+            "feat": "피쳐링",
+            "relevance": "관련성",
+            "mood": "분위기",
+            "lyrics": "가사",
+            "words": ""
+        },
+        {
+            "id": 6,
+            "title": "song_title",
+            "artist": "song_artist",
+            "album": "song_album",
+            "ost": 2,
+            "rel_date": "2020-12-12",
+            "genre": 3,
+            "group_type": 4,
+            "gender": 5,
+            "feat": "피쳐링",
+            "relevance": "관련성",
+            "mood": "분위기",
+            "lyrics": "가사ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ",
             "words": ""
         }
     ]
