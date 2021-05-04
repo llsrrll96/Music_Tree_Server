@@ -112,9 +112,18 @@
 #### 노래 추가
 ```
 - input
-    add?page=1&grNumber, GET
-    page = 1 ~ 10 , grNumber = 1 ~ 8 
+    add2
 - output
     data = { "result" : "yes" } 
             { "result" : "no" }
+```
+```
+- input
+    add1?page=1&grNumber, GET
+    page = 1 ~ 10 , grNumber = 1 ~ 8 
+- output
+    data = { 
+                "title" : "제목".
+                "artist" : "가수"
+            }
 ```
