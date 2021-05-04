@@ -174,11 +174,15 @@ def song():
 @app.route('/admin/modify', methods=['POST'])
 def admin_modify():
     input = request.get_json()
-    # input = {"id" : {"type_name" : {"value" : "?"}}}
-    id = list(input)[0]
-    type_name = list(input.get(id))[0]
-    value = list(input.get(id).get(type_name))[0]
-    status = Administrator.song_modify([type_name, value, id])  # 수행 결과. 수정된 row 갯수 반환.
+    # input = {
+    #                 "id" : 1,
+    #                 "relevance" : "관련성",
+    #                 "mood" : "분위기",
+    #                 "lyrics" : "가사",
+    #                 "words" : ""
+    #         }
+    data = [input['relevance'], input['mood'], input['lyrics'], input['words'], input['id']]
+    status = Administrator.song_modify(data)  # 수행 결과. 수정된 row 갯수 반환.
     if status == 1:
         status = "yes"
     else:
@@ -189,9 +193,9 @@ def admin_modify():
 #관리자 노래 삭제
 @app.route('/admin/delete', methods=['POST'])
 def admin_delete():
-    input = request.get_json()
-    id = input.get("id")
-    status = Administrator.song_delete(int(id))
+    input = request.get
+    id = input.form.get('id')
+    status = Administrator.song_delete(id)
     if status == 1:
         status = "yes"
     else:

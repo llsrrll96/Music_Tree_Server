@@ -2,14 +2,12 @@ import db_connector
 
 
 def song_modify(input):
-    # input = [ 수정할 특성명, 넣을 데이터, 수정할 노래 id ]
+    # input = [ 수정할 관련성, 분위기, 가사, words, 수정할 노래 id ]
     db = db_connector.DbConnector()
     db.connect()
     try:
         with db.connection.cursor() as cursor:
-            sql = "update music_tree.song set {} = %s where id=%s;"
-            sql = sql.format(input[0])  # 수정할 특성 명을 {}부분에 넣어줌
-            del input[0]
+            sql = "update music_tree.song set relevance = %s, mood = %s, lyrics = %s, words = %s where id=%s;"
             result = cursor.execute(sql, input)
             db.connection.commit()
             return result
@@ -18,13 +16,14 @@ def song_modify(input):
 
 
 def song_delete(input):
-    # input = 삭제할 노래 id
+    # input = [ 삭제할 노래 id들 ]
     db = db_connector.DbConnector()
     db.connect()
     try:
         with db.connection.cursor() as cursor:
             sql = "delete from music_tree.song where id='%s';"
-            result = cursor.execute(sql, input)
+            for i in input:
+                result = cursor.execute(sql, i)
             db.connection.commit()
             return result
     finally:
