@@ -15,7 +15,10 @@ app.debug = True
 app.host = 'localhost'
 
 cors = CORS(app, resources={
-    r"/song-info" : {"origin": "*"}
+    r"/song-info" : {"origin": "*"},
+    r"/admin/delete": {"origin": "*"},
+    r"/admin/add": {"origin": "*"},
+    r"/admin/modify": {"origin":"*"}
 })
 socketIo = SocketIO(app, cors_allowed_origins="*")
 
