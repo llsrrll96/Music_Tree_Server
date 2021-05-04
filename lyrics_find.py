@@ -14,7 +14,7 @@ class LyricsFind:
 
 
 	def compare_lyrics(self, lyrics):
-		for l in lyrics_list:
+		for l in self.lyrics_list:
 			if lyrics == l:
 				return True
 
