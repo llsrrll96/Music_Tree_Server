@@ -1,4 +1,4 @@
-from Music_Tree_Server import db_connector
+import db_connector
 
 
 def song_modify(input):

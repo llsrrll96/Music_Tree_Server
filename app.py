@@ -6,7 +6,8 @@ from flask import Flask, render_template, request, jsonify
 from flask_socketio import SocketIO, send, emit, join_room,leave_room
 from flask_cors import CORS
 from db_connector import DbConnector
-from Music_Tree_Server import Administrator
+import Administrator
+from lyrics_find import LyricsFind
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'mysecret'
@@ -231,7 +232,7 @@ def find_lyrics(data):
 		"song_id" : song_id
 	}
 
-	send('answer', result, to=socketId)
+	send('answer', result, to=socket_id)
 
 # @app.route('/',methods=('GET', 'POST')) # 접속하는 url
 # def index():
