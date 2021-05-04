@@ -173,26 +173,27 @@ session = {}
 def disconnect(data):
 	socket_id = data["socketId"]
 	leave_room(socket_id)
-	del session[socket_id])
-    print ("Disconnected")
+	del session[socket_id]
+	print ("Disconnected")
 
 
 @socketIo.on('join', namespace='/prediction')
 def on_join(data):
-    socket_id = data["socketId"]
-    join_room(socket_id)
-    session['socket_id'] = {}
-	# emit("response", question.firstQuestion(session['socket_id']), to=socketId)
-	send('response', { "socketId" : socket_id }, to=socketId)
+	socket_id = data["socketId"]
+	join_room(socket_id)
+	session['socket_id'] = {}
+# emit("response", question.firstQuestion(session['socket_id']), to=socketId)
+	send('response', { "socketId" : socket_id }, to=socket_id)
 
 
+	
 @socketIo.on('answer',namespace='/prediction')
 def requestl(ans):
-    print("ans: ",ans)
+	print("ans: ",ans)
 	socket_id = ans["socketId"]
-    # 데이터 보내는 함수 생성
-    ## 프로토콜 type 1: 일반질문, 2: 가사 ,3: 결과
-    data = {
+	# 데이터 보내는 함수 생성
+	# 프로토콜 type 1: 일반질문, 2: 가사 ,3: 결과
+	data = {
                 "type" : "2"
             }
     # data = {
@@ -209,22 +210,23 @@ def requestl(ans):
     #             "songId" : Result.getSongId()
     #         }
 
-    print(data) #보내는 데이터
-    send("answer", data, to=socket_id)
-    data.clear()
+	print(data) 
+	#보내는 데이터
+	send("answer", data, to=socket_id)
+	data.clear()
 
-    return None
+	return None
 
 
 @socketIo.on('lyrics_find', namespace='/prediction')
 def find_lyrics(data):
+
 	socket_id = data["socketId"]
 	lyrics_input = data["lyricsInput"]
 	song_list = session[socket_id]['song_list']
 	lf = LyricsFind(lyrics_input, song_list)
 	song_id = lf.max_similarity()
-	result = 
-	{
+	result = {
 		"type" : "3",
 		"song_id" : song_id
 	}
