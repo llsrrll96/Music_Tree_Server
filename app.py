@@ -8,6 +8,10 @@ from flask_cors import CORS
 from db_connector import DbConnector
 import Administrator
 from lyrics_find import LyricsFind
+import musicInsert1
+import musicInsert2
+import json
+from collections import OrderedDict
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'mysecret'
@@ -17,7 +21,7 @@ app.host = 'localhost'
 cors = CORS(app, resources={
     r"/song-info" : {"origin": "*"},
     r"/admin/delete": {"origin": "*"},
-    r"/admin/add": {"origin": "*"},
+    r"/admin/add1": {"origin": "*"},
     r"/admin/modify": {"origin":"*"}
 })
 socketIo = SocketIO(app, cors_allowed_origins="*")
@@ -27,6 +31,35 @@ socketIo = SocketIO(app, cors_allowed_origins="*")
 @app.route("/")
 def main():
     return render_template("index.html")
+
+@app.route('/admin/add1', methods=["GET"])
+def songAdd():
+    pg = request.args.get('page')
+    gr = request.args.get('grNumber')
+    # print(str(test) + str(gr))
+    rs = musicInsert1.insertMusic(int(pg), int(gr))
+
+    if rs != int(-1) :
+        list = []
+        for i in range(len(rs)) :
+            # resultArray.append([])
+            dict = { "title" : rs[i][2], "artist" : rs[i][3]}
+            list.append(dict)
+        jsonArray = json.dumps(list, ensure_ascii=False)
+        print(jsonArray)
+
+        return jsonArray
+    else :
+        data = {
+            "result": "error"
+        }
+        return data
+    """
+    data = {
+        "result": "yes"
+    }
+    return data
+    """
 
 # 접속하는 url
 @app.route('/song-info', methods=['GET'])

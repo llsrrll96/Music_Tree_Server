@@ -129,4 +129,9 @@ def insertMusic(page, grNumber) :
     print("중복 제거 후 : " + str(len(mList)))
     saveToFile('melonMusicList.csv', mList)
 
+    if os.path.exists('melonMusicList.csv'):
+        return mList
+    else :
+        return -1
+
 # insertMusic(1, 2)
