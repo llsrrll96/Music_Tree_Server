@@ -2,7 +2,7 @@
 
 import os
 import question, result
-from flask import Flask, render_template, request, session, jsonify
+from flask import Flask, render_template, request, jsonify
 from flask_socketio import SocketIO, send, emit, join_room,leave_room
 from flask_cors import CORS
 from db_connector import DbConnector
@@ -163,21 +163,33 @@ def admin_delete():
 
 ## 소켓 #####################################################
 
+# socket_id : 유저를 구분하는 id
+# session[socket_id]의 형태로 바로 접근하도록 dictionary로 설정
+# session[socket_id]['song_list'] : 노래 정보 배열 저장
+
+session = {}
+
 @socketIo.on('disconnect', namespace='/prediction')
-def disconnect():
-    session.clear()
+def disconnect(data):
+	socket_id = data["socketId"]
+	leave_room(socket_id)
+	del session[socket_id])
     print ("Disconnected")
+
 
 @socketIo.on('join', namespace='/prediction')
 def on_join(data):
-    socketId = data['socketId']
-    join_room(socketId)
-    session['socketId'] = socketId
-    emit("response", question.firstQuestion(session['socketId']), to=socketId)
+    socket_id = data["socketId"]
+    join_room(socket_id)
+    session['socket_id'] = {}
+	# emit("response", question.firstQuestion(session['socket_id']), to=socketId)
+	send('response', { "socketId" : socket_id }, to=socketId)
 
-@socketIo.on("answer",namespace='/prediction')
+
+@socketIo.on('answer',namespace='/prediction')
 def requestl(ans):
     print("ans: ",ans)
+	socket_id = ans["socketId"]
     # 데이터 보내는 함수 생성
     ## 프로토콜 type 1: 일반질문, 2: 가사 ,3: 결과
     data = {
@@ -198,10 +210,26 @@ def requestl(ans):
     #         }
 
     print(data) #보내는 데이터
-    emit("answer", data, broadcast=False)
+    send("answer", data, to=socket_id)
     data.clear()
 
     return None
+
+
+@socketIo.on('lyrics_find', namespace='/prediction')
+def find_lyrics(data):
+	socket_id = data["socketId"]
+	lyrics_input = data["lyricsInput"]
+	song_list = session[socket_id]['song_list']
+	lf = LyricsFind(lyrics_input, song_list)
+	song_id = lf.max_similarity()
+	result = 
+	{
+		"type" : "3",
+		"song_id" : song_id
+	}
+
+	send('answer', result, to=socketId)
 
 # @app.route('/',methods=('GET', 'POST')) # 접속하는 url
 # def index():
@@ -216,17 +244,6 @@ def requestl(ans):
 #         data = {'level': 60, 'point': 360, 'exp': 45000}
 #         return render_template('index.html', user=user, data=data)
 
-#####세션 관리#####
-# user_no = 1
-# @app.before_request
-# def before_request():
-#     global user_no
-#     if 'session' in session and 'user-id' in session:
-#         pass
-#     else:
-#         session['session'] = os.urandom(24) #랜덤값 부여
-#         session['username'] = 'user'+str(user_no)
-#         user_no += 1
 
 #https://flask-socketio.readthedocs.io/en/latest/
 if __name__=="__main__":
