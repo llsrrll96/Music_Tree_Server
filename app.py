@@ -66,7 +66,7 @@ def songAdd():
 def song():
     # db 조회
     index = request.args.get('index')  # /song-info?index=
-    result = Administrator.song_inquiry(index)
+    result = Administrator.song_inquiry(int(index))
     # test 더미데이터
     data = [
         {

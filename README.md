@@ -87,7 +87,14 @@
 #### 노래 수정
 ```
 - input
-    input = {"1" : {"lyrics" : {"value" : "가사"}}}
+    input = {
+                "id" : 1,
+                "relevance" : "관련성",
+                "mood" : "분위기",
+                "lyrics" : "가사",
+                "words" : ""
+            }
+    
 - output
     data = { "result" : "yes" } 
 ```
