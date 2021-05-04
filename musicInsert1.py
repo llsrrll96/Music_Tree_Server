@@ -54,6 +54,7 @@ def searchMelon(driver, grNumber):
             if featPoint != -1 :
                 featEnd = title.find(')')
                 feat = title[featPoint + 6 : featEnd]
+                feat = feat.replace(",","`")
 
             groupType = 0
             gender = 0

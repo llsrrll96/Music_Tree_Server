@@ -60,6 +60,8 @@ def searchMelon2(driver, data, k):
     soup = BeautifulSoup(html, 'html.parser')
     dl = soup.find(class_='section_atistinfo03').find(class_='list_define clfix')
     groupGenderType = dl.find_all('dd')
+    groupType = 3
+    genderType = 0
 
     for i in groupGenderType:
         typeTemp = i.text;
@@ -74,9 +76,9 @@ def searchMelon2(driver, data, k):
                 elif typeList[1] == "혼성":
                     genderType = 3
                 else :
-                    genderType = 4
+                    genderType = 0
             else :
-                genderType = 4
+                genderType = 0
 
             if typeList[0] == "솔로":
                 groupType = 1
