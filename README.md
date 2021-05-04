@@ -95,8 +95,9 @@
 #### 노래 삭제
 ```
 - input 
-배열 형태
-    input = { "id" : 1 } 
+    POST, <class 'list'> 배열 형태
+    input = [4, 5]
+    
 - output
     data = { "result" : "yes" }
 ```
@@ -104,7 +105,7 @@
 #### 노래 추가
 ```
 - input
-    쿼리 스트링
+    add?page=1&grNumber, GET
     page = 1 ~ 10 , grNumber = 1 ~ 8 
 - output
     data = { "result" : "yes" } 
