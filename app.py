@@ -2,7 +2,7 @@
 
 import os
 import question, result
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, session
 from flask_socketio import SocketIO, send, emit, join_room,leave_room
 from flask_cors import CORS
 from db_connector import DbConnector
@@ -208,13 +208,12 @@ def admin_delete():
 # session[socket_id]의 형태로 바로 접근하도록 dictionary로 설정
 # session[socket_id]['song_list'] : 노래 정보 배열 저장
 
-session = {}
 
 @socketIo.on('disconnect', namespace='/prediction')
 def disconnect(data):
 	socket_id = data["socketId"]
 	leave_room(socket_id)
-	del session[socket_id]
+	session[socket_id].clear()
 	print ("Disconnected")
 
 
@@ -223,9 +222,7 @@ def on_join(data):
 	socket_id = data["socketId"]
 	join_room(socket_id)
 	session['socket_id'] = {}
-# emit("response", question.firstQuestion(session['socket_id']), to=socketId)
-	send('response', { "socketId" : socket_id }, to=socket_id)
-
+	emit("response", question.firstQuestion(socket_id), to=socketId)
 
 	
 @socketIo.on('answer',namespace='/prediction')
@@ -259,6 +256,7 @@ def requestl(ans):
 	return None
 
 
+# 가사 검색
 @socketIo.on('lyrics_find', namespace='/prediction')
 def find_lyrics(data):
 
@@ -269,7 +267,7 @@ def find_lyrics(data):
 	song_id = lf.max_similarity()
 	result = {
 		"type" : "3",
-		"song_id" : song_id
+		"song" : session[socket_id]['song_list'][song_id]
 	}
 
 	send('answer', result, to=socket_id)

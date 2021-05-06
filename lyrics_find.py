@@ -5,7 +5,7 @@ from konlpy.tag import Kkma
 
 # ex)
 # lyrics_input : '니 손 꼭 잡고 그냥 이 길을 걸었으면 내게'
-# lyrics_list : [{'song_id':1, 'words':['a', 'b', 'c']}, {'song_id':2, 'words':['b', 'c', 'd']}, ...]
+# lyrics_list : [{'song_id':1, 'words':['a', 'b', 'c'], 'lyrics':'asdjklfasdkfj'}, {'song_id':2, 'words':['b', 'c', 'd'], 'lyrics':'zcvmzncv,msdlf'}, ...]
 
 class LyricsFind:
 	def __init__(self, lyrics_input, lyrics_list):
@@ -15,9 +15,10 @@ class LyricsFind:
 
 	def compare_lyrics(self, lyrics):
 		for l in self.lyrics_list:
-			if lyrics == l:
+			print(l['lyrics'])
+			if l['lyrics'].find(lyrics) != -1:
 				return True
-
+		
 		return False
 
 
@@ -53,9 +54,7 @@ class LyricsFind:
 		max_similarity = 0.0
 
 		for lyrics in lyrics_list:
-			print(lyrics['words'])
 			temp = self.measure_similarity(l, lyrics['words'])
-			print(lyrics['song_id'])
 			if temp > max_similarity:
 				song_id = lyrics['song_id']
 				max_similarity = temp
@@ -65,5 +64,6 @@ class LyricsFind:
 
 if __name__ == '__main__':
 	# test
-	lf = LyricsFind('a', [{'words':['a', 'b', 'c'], 'song_id':123 }])
+	lf = LyricsFind('a', [{'words':['a', 'b', 'c'], 'song_id':123, 'lyrics':'adkjnsnl' }])
 	print(lf.max_similarity())
+	print(lf.compare_lyrics('a'))
