@@ -30,11 +30,22 @@ class DbConnector:
 				sql = 'SELECT title FROM music_tree.song LIMIT %s'
 				cursor.execute(sql, n)
 				result = cursor.fetchall()
-				print(result)
+		finally:
+			self.close()
+
+	
+	def select_all(self):
+		self.connect()
+		try:
+			with self.connection.cursor() as cursor:
+				sql = 'SELECT * FROM music_tree.song'
+				cursor.execute(sql)
+				result = cursor.fetchall()
+				return result
 		finally:
 			self.close()
 
 
 if __name__ == '__main__':
 	db = DbConnector()
-	db.select_ballad(5)
+	print(len(db.select_gender_and_type(1,1)))
