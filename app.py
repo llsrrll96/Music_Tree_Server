@@ -221,12 +221,13 @@ def disconnect(data):
 def on_join(data):
 	socket_id = data["socketId"]
 	join_room(socket_id)
-	session['socket_id'] = {}
-	emit("response", question.firstQuestion(socket_id), to=socketId)
+	session[socket_id] = {}
+	session[socket_id]['song_list'] = song_list
+	emit("response", question.create_question(socket_id), to=socketId)
 
 	
 @socketIo.on('answer',namespace='/prediction')
-def requestl(ans):
+def request(ans):
 	print("ans: ",ans)
 	socket_id = ans["socketId"]
 	# 데이터 보내는 함수 생성
@@ -250,8 +251,6 @@ def requestl(ans):
 
 	print(data) 
 	#보내는 데이터
-	send("answer", data, to=socket_id)
-	data.clear()
 
 	return None
 
@@ -288,6 +287,9 @@ def find_lyrics(data):
 
 #https://flask-socketio.readthedocs.io/en/latest/
 if __name__=="__main__":
+	db = DbConnector()
+	song_list = db.select_all()
+	print(len(song_list))
 	socketIo.run(app)
 
   # app.run(debug=True)
