@@ -223,7 +223,7 @@ def on_join(data):
 	join_room(socket_id)
 	session[socket_id] = {}
 	session[socket_id]['song_list'] = song_list
-	emit("response", question.create_question(socket_id), to=socketId)
+	emit("response", question.create_question(socket_id), to=socket_id)
 
 	
 @socketIo.on('answer',namespace='/prediction')
