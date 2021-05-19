@@ -121,10 +121,10 @@ def insertMusic(page, grNumber) :
 
     for i in range(len(csvIdList) - 1, -1, -1):
         for j in range(len(dbIdList) - 1, -1, -1):
-            if csvIdList[i] == str(dbIdList[j]) :
+            if str(csvIdList[i]) == str(dbIdList[j]) :
                 # print(mList[i])
                 mList.pop(i)
-                break;
+                break
 
     print("중복 제거 후 : " + str(len(mList)))
     saveToFile('melonMusicList.csv', mList)

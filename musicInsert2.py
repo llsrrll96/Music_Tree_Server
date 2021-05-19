@@ -143,10 +143,11 @@ def fillCsv() :
     print("중복 제거 전 : " + str(len(data)))
     # print(len(data))
 
-    for i in range(len(dbIdList)):
-        for j in range(len(csvIdList)):
-            if dbIdList[i] == csvIdList[j]:
-                data = data.drop(data.index[j])
+    for i in range(len(csvIdList) - 1, -1, -1):
+        for j in range(len(dbIdList) - 1, -1, -1):
+            if str(csvIdList[i]) == str(dbIdList[j]) :
+                data = data.drop(data.index[i])
+                break
 
     print("중복 제거 후 : " + str(len(data)))
 
