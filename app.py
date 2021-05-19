@@ -234,10 +234,10 @@ def admin_delete():
 
 
 @socketIo.on('disconnect', namespace='/prediction')
-def disconnect(data):
-	socket_id = data["socketId"]
-	leave_room(socket_id)
-	session[socket_id].clear()
+def disconnect():
+#socket_id = data["socketId"]
+#leave_room(socket_id)
+#	session[socket_id].clear()
 	print ("Disconnected")
 
 

@@ -7,7 +7,7 @@ def song_modify(input):
     db.connect()
     try:
         with db.connection.cursor() as cursor:
-            sql = "update music_tree.song set relevance = %s, mood = %s, lyrics = %s, words = %s where id=%s;"
+            sql = "update music_tree.song set relevance = %s, mood = %s, lyrics = %s, words = %s where song_id=%s;"
             result = cursor.execute(sql, input)
             db.connection.commit()
             return result
@@ -21,7 +21,7 @@ def song_delete(input):
     db.connect()
     try:
         with db.connection.cursor() as cursor:
-            sql = "delete from music_tree.song where id='%s';"
+            sql = "delete from music_tree.song where song_id='%s';"
             for i in input:
                 result = cursor.execute(sql, i)
             db.connection.commit()
@@ -36,7 +36,7 @@ def song_inquiry(input):
     db.connect()
     try:
         with db.connection.cursor() as cursor:
-            sql = "SELECT * FROM music_tree.song order by id limit %s, 50;"
+            sql = "SELECT * FROM music_tree.song order by song_id limit %s, 50;"
             cursor.execute(sql, input-1)
             result = cursor.fetchall()
             return result
