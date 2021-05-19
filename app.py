@@ -299,6 +299,38 @@ def find_lyrics(data):
 
 	send('answer', result, to=socket_id)
 
+# 
+@socketIo.on('question',namespace='/prediction')
+def make_question(data):
+    	socket_id = data["socketId"]
+    	step = session[socket_id]['step']
+    	question_type = [[
+        	"남성", "여성", "혼성", "기타"  # 성별. 0
+        	], [
+        	"솔로", "그룹", "기타"  # 활동유형. 1
+        	], [
+        	"발라드", "댄스", "랩/힙합", "R&B/Soul", "인디음악", "록/메탈", "트로트", "포크/블루스"  # 장르. 2
+        	], [
+        	2020, 2010, 2000, 1990, 1980  # 년도. 3
+        	], [
+        	"예", "아니요"  # OST 여부. 4
+        	], [
+        	"예", "아니요"  # 피처링 여부. 5
+        	], [
+        	"자극적인", "화난", "긴장되는", "슬픈", "지루한", "졸린", "잔잔한", "평화로운", "느긋한", "기쁜", "행복한", "신나는"  # 분위기. 6
+        	], [  # 관련성. 7
+    	]]
+    	question_type_name = ["성별", "활동유형", "장르", "년도", " OST여부", "피처링여부", "분위기", "관련성"]
+    	data = {
+            	"type": "1",
+            	"step": step,
+            	"columns_name": question_type_name[step],
+            	"columns": question_type[step],
+            	'socketId': session['socketId']
+    	}
+    	session[socket_id]['step'] = step+1
+    	send('question', data, to=socket_id)
+	
 # @app.route('/',methods=('GET', 'POST')) # 접속하는 url
 # def index():
 #     if request.method == "POST":
