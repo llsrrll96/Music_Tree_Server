@@ -150,7 +150,8 @@ def fillCsv() :
 
     print("중복 제거 후 : " + str(len(data)))
 
-    insertDB(data)
+    rs = insertDB(data)
+    return rs
 
 # DB에 노래 데이터 삽입
 def insertDB(data) :
@@ -166,8 +167,11 @@ def insertDB(data) :
                       "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
                 cursor.execute(sql, list)
                 db.connection.commit()
-    # except Exception as ex:  # 에러 종류
-       # print('에러가 발생 했습니다 \n', ex)  # ex는 발생한 에러의 이름을 받아오는 변수
+
+        return 1
+    except Exception as ex:  # 에러 종류
+        return -1
+        # print('에러가 발생 했습니다 \n', ex)  # ex는 발생한 에러의 이름을 받아오는 변수
     finally:
         db.close()
 

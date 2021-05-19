@@ -32,10 +32,18 @@ socketIo = SocketIO(app, cors_allowed_origins="*")
 def main():
     return render_template("index.html")
 
+# 노래 업데이트 1단계 : 노래 정보를 크롤링을 통해 따온 후 관리자에게 목록을 제공한다.
 @app.route('/admin/add1', methods=["GET"])
 def songAdd():
     pg = request.args.get('page')
     gr = request.args.get('grNumber')
+
+    if pg is None or gr is None :
+        data = {
+            "result": "args error"
+        }
+        return data
+
     # print(str(test) + str(gr))
     rs = musicInsert1.insertMusic(int(pg), int(gr))
 
@@ -51,7 +59,7 @@ def songAdd():
         return jsonArray
     else :
         data = {
-            "result": "error"
+            "result": "none count"
         }
         return data
     """
@@ -60,6 +68,22 @@ def songAdd():
     }
     return data
     """
+
+# 목록을 확인한 관리자가 추가를 승인할 경우, 해당 목록들의 곡들이 DB에 업데이트 된다.
+@app.route('/admin/add2', methods=["GET"])
+def songUpdate():
+    rs = musicInsert2.fillCsv()
+
+    if rs != int(-1) :
+        data = {
+            "result": "yes"
+        }
+        return data
+    else :
+        data = {
+            "result": "error"
+        }
+        return data
 
 # 접속하는 url
 @app.route('/song-info', methods=['GET'])
@@ -227,7 +251,7 @@ def on_join(data):
 
 	
 @socketIo.on('answer',namespace='/prediction')
-def request(ans):
+def answerRequest(ans):
 	print("ans: ",ans)
 	socket_id = ans["socketId"]
 	# 데이터 보내는 함수 생성
