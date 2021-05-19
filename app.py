@@ -334,7 +334,7 @@ def make_question(data):
             	'socketId': session['socketId']
     	}
     	session[socket_id]['step'] = step+1
-    	send('question', data, to=socket_id)
+    	emit('response', data, to=socket_id)
 	
 # @app.route('/',methods=('GET', 'POST')) # 접속하는 url
 # def index():
