@@ -14,14 +14,14 @@ def openDriver(startIndex, genre):
           + '#params%5BgnrCode%5D=' + genre\
           + '&params%5BdtlGnrCode%5D=GN0501&params%5BorderBy%5D=NEW&params%5BsteadyYn%5D=N&po=pageObj&startIndex='\
           + str(startIndex);
-    test = "https://www.melon.com/genre/song_list.htm?gnrCode=GN0200#params%5BgnrCode%5D=GN0200&params%5BdtlGnrCode%5D=&params%5BorderBy%5D=POP&params%5BsteadyYn%5D=N&po=pageObj&startIndex=1";
+    # test = "https://www.melon.com/genre/song_list.htm?gnrCode=GN0200#params%5BgnrCode%5D=GN0200&params%5BdtlGnrCode%5D=&params%5BorderBy%5D=POP&params%5BsteadyYn%5D=N&po=pageObj&startIndex=1";
     webdriver_options = webdriver.ChromeOptions()
     webdriver_options.add_argument('headless')
     webdriver_options.add_argument('no-sandbox')
     driver = webdriver.Chrome(options=webdriver_options)
     # driver = webdriver.Chrome()
     driver.implicitly_wait(3)
-    driver.get(test)
+    driver.get(url)
     time.sleep(1)
     return driver
 
