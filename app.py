@@ -91,6 +91,10 @@ def song():
     # db 조회
     index = request.args.get('index')  # /song-info?index=
     result = Administrator.song_inquiry(int(index))
+    for i in result:
+        i['id'] = i['song_id']
+        del i['song_id']
+
     # test 더미데이터
     data = [
         {
