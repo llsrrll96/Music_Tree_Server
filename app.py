@@ -303,6 +303,8 @@ def find_lyrics(data):
 @socketIo.on('question',namespace='/prediction')
 def make_question(data):
     	socket_id = data["socketId"]
+	if session[socket_id]['step'] is None:
+        	session[socket_id]['step'] = 1
     	step = session[socket_id]['step']
     	question_type = [[
         	"남성", "여성", "혼성", "기타"  # 성별.
