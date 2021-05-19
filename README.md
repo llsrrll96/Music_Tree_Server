@@ -5,12 +5,12 @@
 ### Data Protocol
 ```
 - output
-    data = {
-                "type" : "1",
-                "step": "2",
-                "q":"2번 질문입니다.",
-                'socketId': session['socketId']
-            }
+        data = {
+               "type": "1",
+               "step": step,  # 1: 성별, 2: 활동유형, 3:장르, 4:년도, 5:OST 여부, 6:피처링 여부, 7:분위기, 8:관련성
+               "question_type_name": question_type_name[step-1],  #질문에 나올 질문할 속성 명, ["남성","여성"]
+               "question_type": question_type[step-1]  #답변으로 표시될 노래 속성값들 , "성별"
+       }
 ```
             
 #### 가사 검색 요청
