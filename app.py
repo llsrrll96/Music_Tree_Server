@@ -34,7 +34,7 @@ def main():
 
 # 노래 업데이트 1단계 : 노래 정보를 크롤링을 통해 따온 후 관리자에게 목록을 제공한다.
 @app.route('/admin/add1', methods=["GET"])
-def songAdd():
+def songAdd1():
     pg = request.args.get('page')
     gr = request.args.get('grNumber')
 
@@ -71,7 +71,7 @@ def songAdd():
 
 # 목록을 확인한 관리자가 추가를 승인할 경우, 해당 목록들의 곡들이 DB에 업데이트 된다.
 @app.route('/admin/add2', methods=["GET"])
-def songUpdate():
+def songAdd2():
     rs = musicInsert2.fillCsv()
 
     if rs != int(-1) :
