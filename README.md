@@ -122,8 +122,14 @@
     add1?page=1&grNumber, GET
     page = 1 ~ 10 , grNumber = 1 ~ 8 
 - output
-    data = { 
-                "title" : "제목".
-                "artist" : "가수"
-            }
+[
+        {
+                title: "사랑 안 해",
+                artist: "백지영"
+        },
+        {
+                title: "불꽃놀이",
+                artist: "하진"
+        }
+]
 ```
