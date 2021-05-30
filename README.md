@@ -25,9 +25,10 @@
 ```
 - output
     data = {
-                "type" : "3",
-                "songId" : Result.getSongInfo()
-            }
+        "type": "3",
+        "song": "song_answer",
+        "url": "url",
+    }
 ```
 
 #### 노래 결과 정보 (예측 끝)
