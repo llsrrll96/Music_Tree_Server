@@ -95,7 +95,6 @@ def song():
         i['id'] = i['song_id']
         del i['song_id']
 
-
     print(result)
     return jsonify(result)
 
@@ -132,12 +131,14 @@ def admin_delete():
         status = "no"
     return jsonify({"result": status})
 
+
 # 관리자 가사 단어 추출
 @app.route('/admin/words', methods=['POST'])
-def admin_modify():
+def admin_update_words():
     Administrator.update_words_all()
 
     return jsonify({"result": 1})
+
 
 ## 소켓 #####################################################
 
