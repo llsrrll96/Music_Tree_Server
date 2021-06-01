@@ -23,6 +23,7 @@ cors = CORS(app, resources={
     r"/song-info": {"origin": "*"},
     r"/admin/delete": {"origin": "*"},
     r"/admin/add1": {"origin": "*"},
+    r"/admin/add2": {"origin": "*"},
     r"/admin/modify": {"origin": "*"}
 })
 socketIo = SocketIO(app, cors_allowed_origins="*")
@@ -65,12 +66,6 @@ def songAdd1():
             "result": "none count"
         }
         return data
-    """
-    data = {
-        "result": "yes"
-    }
-    return data
-    """
 
 
 # 목록을 확인한 관리자가 추가를 승인할 경우, 해당 목록들의 곡들이 DB에 업데이트 된다.
@@ -100,105 +95,7 @@ def song():
         i['id'] = i['song_id']
         del i['song_id']
 
-    # test 더미데이터
-    data = [
-        {
-            "id": 1,
-            "title": "song_title",
-            "artist": "song_artist",
-            "album": "song_album",
-            "ost": 2,
-            "rel_date": "2020-12-12",
-            "genre": 3,
-            "group_type": 4,
-            "gender": 5,
-            "feat": "피쳐링",
-            "relevance": "관련성",
-            "mood": "분위기",
-            "lyrics": "가사",
-            "words": "",
-        },
-        {
-            "id": 2,
-            "title": "song_title",
-            "artist": "song_artist",
-            "album": "song_album",
-            "ost": 2,
-            "rel_date": "2020-12-12",
-            "genre": 3,
-            "group_type": 4,
-            "gender": 5,
-            "feat": "피쳐링",
-            "relevance": "관련성",
-            "mood": "분위기",
-            "lyrics": "가사",
-            "words": ""
-        },
-        {
-            "id": 3,
-            "title": "song_title",
-            "artist": "song_artist",
-            "album": "song_album",
-            "ost": 2,
-            "rel_date": "2020-12-12",
-            "genre": 3,
-            "group_type": 4,
-            "gender": 5,
-            "feat": "피쳐링",
-            "relevance": "관련성",
-            "mood": "분위기",
-            "lyrics": "가사",
-            "words": ""
-        },
-        {
-            "id": 4,
-            "title": "song_title",
-            "artist": "song_artist",
-            "album": "song_album",
-            "ost": 2,
-            "rel_date": "2020-12-12",
-            "genre": 3,
-            "group_type": 4,
-            "gender": 5,
-            "feat": "피쳐링",
-            "relevance": "관련성",
-            "mood": "분위기",
-            "lyrics": "가사",
-            "words": ""
-        },
-        {
-            "id": 5,
-            "title": "song_title",
-            "artist": "song_artist",
-            "album": "song_album",
-            "ost": 2,
-            "rel_date": "2020-12-12",
-            "genre": 3,
-            "group_type": 4,
-            "gender": 5,
-            "feat": "피쳐링",
-            "relevance": "관련성",
-            "mood": "분위기",
-            "lyrics": "가사",
-            "words": ""
-        },
-        {
-            "id": 6,
-            "title": "song_title",
-            "artist": "song_artist",
-            "album": "song_album",
-            "ost": 2,
-            "rel_date": "2020-12-12",
-            "genre": 3,
-            "group_type": 4,
-            "gender": 5,
-            "feat": "피쳐링",
-            "relevance": "관련성",
-            "mood": "분위기",
-            "lyrics": "가사ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ",
-            "words": ""
-        }
-    ]
+
     print(result)
     return jsonify(result)
 
@@ -258,8 +155,6 @@ def on_join(data):
     session[socket_id]['song_list'] = song_list
     session[socket_id]['step'] = 1
 
-    emit("response", question.create_question(socket_id), to=socket_id)
-
 
 @socketIo.on('answer', namespace='/prediction')
 def answerRequest(ans):
@@ -268,7 +163,8 @@ def answerRequest(ans):
     # 데이터 보내는 함수 생성
     # 프로토콜 type 1: 일반질문, 2: 가사 ,3: 결과
     data = {
-        "type": "2"
+        "type": "1",
+        "result": ans
     }
     # data = {
     #             "type" : "1",
@@ -286,6 +182,7 @@ def answerRequest(ans):
 
     print(data)
     # 보내는 데이터
+    emit('answer', data, to=socket_id)
 
     return None
 
@@ -335,7 +232,10 @@ def make_question(data):
 
     if step == 8:
         song_list = session[socket_id]['song_list']
-        question_type[7] = song_list['relevance']
+        relevance = []
+        for i in song_list:
+            relevance.append(i['relevance'])
+        question_type[7] = relevance
 
     data = {
         "type": "1",
