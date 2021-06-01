@@ -36,7 +36,7 @@ def song_inquiry(input):
     db.connect()
     try:
         with db.connection.cursor() as cursor:
-            sql = "SELECT * FROM music_tree.song order by song_id limit %s, 50;"
+            sql = "SELECT * FROM music_tree.song order by song_id limit %s, 500;"
             cursor.execute(sql, input-1)
             result = cursor.fetchall()
             return result
