@@ -1,3 +1,5 @@
+from konlpy.tag import Hannanum
+
 import db_connector
 
 
@@ -44,3 +46,24 @@ def song_inquiry(input):
         db.close()
 
 
+def update_words(song_id, words):
+    db = db_connector.DbConnector()
+    db.connect()
+    try:
+        with db.connection.cursor() as cursor:
+            sql = "update music_tree.song set words = %s where song_id=%s;"
+            result = cursor.execute(sql, words, song_id)
+            db.connection.commit()
+            return result
+    finally:
+        db.close()
+
+
+def update_words_all():
+    hannanum = Hannanum()
+    db = db_connector.DbConnector()
+    song_list = db.select_all()
+    for song in song_list:
+        if song['words'] is None and song['lyrics'] is not None:
+            words = hannanum.nouns(song['lyrics'])
+            update_words(song['song_id'], ' '.join(words))
