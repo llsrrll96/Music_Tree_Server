@@ -192,17 +192,25 @@ def answerRequest(ans):
 def find_lyrics(data):
     socket_id = data["socketId"]
     lyrics_input = data["lyricsInput"]
-    lf = LyricsFind(lyrics_input, session[socket_id]['song_list'])
-    song_id = lf.max_similarity()
-    song_answer = session[socket_id]['song_list'][song_id]
-    url = result_manager.search_song_url(song['artist'], song['title'])
-    answer = {
-        "type": "3",
-        "song": song_answer,
-        "url": url,
-    }
+    song_id = 0
+    if lyrics_input == '':
+        song_id = 1
+    else:
+        lf = LyricsFind(lyrics_input, session[socket_id]['song_list'])
+        song_id = lf.max_similarity()
 
-    send('answer', answer, to=socket_id)
+    song_answer = session[socket_id]['song_list'][song_id]
+    url = result_manager.search_song_url(song_answer['artist'], song_answer['title'])
+    # answer = {
+    #     "type": "3",
+    #     "song": song_answer,
+    #     "url": url,
+    # }
+    song_answer['type'] = '3'
+    song_answer['url'] = url
+    song_answer['rel_date'] = str(song_answer['rel_date'])
+
+    emit('answer', song_answer, to=socket_id)
 
 
 # 질문 생성
@@ -235,15 +243,22 @@ def make_question(data):
         relevance = []
         for i in song_list:
             relevance.append(i['relevance'])
+            if len(relevance) == 10:
+                break
         question_type[7] = relevance
 
-    data = {
-        "type": "1",
-        "step": step,  # 1: 성별, 2: 활동유형, 3:장르, 4:년도, 5:OST 여부, 6:피처링 여부, 7:분위기, 8:관련성
-        "question_type_name": question_type_name[step - 1],  # 질문에 나올 질문할 속성 명
-        "question_type": question_type[step - 1],  # 답변으로 표시될 노래 속성값들
-    }
-    session[socket_id]['step'] = step + 1
+    if step == 9:
+        data= {
+            "type":"2"
+        }
+    else:
+        data = {
+            "type": "1",
+            "step": step,  # 1: 성별, 2: 활동유형, 3:장르, 4:년도, 5:OST 여부, 6:피처링 여부, 7:분위기, 8:관련성
+            "question_type_name": question_type_name[step - 1],  # 질문에 나올 질문할 속성 명
+            "question_type": question_type[step - 1],  # 답변으로 표시될 노래 속성값들
+        }
+        session[socket_id]['step'] = step + 1
 
     emit('response', data, to=socket_id)
 
