@@ -132,6 +132,12 @@ def admin_delete():
         status = "no"
     return jsonify({"result": status})
 
+# 관리자 가사 단어 추출
+@app.route('/admin/words', methods=['POST'])
+def admin_modify():
+    Administrator.update_words_all()
+
+    return jsonify({"result": 1})
 
 ## 소켓 #####################################################
 
