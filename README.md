@@ -4,6 +4,17 @@
 
 ### Data Protocol
 ```
+
+- input
+  - join 
+    data = {socketId : socket.id}
+   
+  - answer
+        data = {
+            "btnValue" : "버튼 값",
+            "socketId" : "소켓 id 문자열"
+        }
+
 - output
         data = {
                "type": "1",
@@ -23,6 +34,11 @@
 
 #### 노래 예측 결과결과
 ```
+- input 
+    data = {socketId : socket.id, lyricsInput : lyrics}
+    가사 모름 :
+    data = {socketId : socket.id, lyricsInput : ''}
+
 - output
     data = {
         'song_id': 2, 
