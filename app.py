@@ -11,6 +11,7 @@ import musicInsert1
 import musicInsert2
 import question
 import result_manager
+import pandas as pd
 from db_connector import DbConnector
 from lyrics_find import LyricsFind
 
@@ -28,7 +29,7 @@ cors = CORS(app, resources={
 })
 socketIo = SocketIO(app, cors_allowed_origins="*")
 
-
+sub_list = []
 ## 관리자 #####################################################
 
 @app.route("/")
@@ -84,6 +85,108 @@ def songAdd2():
         }
         return data
 
+# 목록을 확인한 관리자가 추가를 승인할 경우, 해당 목록들의 곡들이 DB에 업데이트 된다.
+# @app.route('/filterList', methods=["GET"])
+def filterList(data):
+    socket_id = data["socketId"]
+    step = session[socket_id]['step']
+    btnValue = data["btnValue"]
+    print(step)
+    print(btnValue)
+    global sub_list
+    print(sub_list)
+    col = -1
+    value = ""
+
+    if step == 1 :
+        col = '8'
+        if btnValue == "남성" :
+            value = 1
+        elif btnValue == "여성" :
+            value = 2
+        elif btnValue == "혼성" :
+            value = 3
+        elif btnValue == "기타" :
+            value = 0
+    elif step == 2 :
+        col = '7'
+        if btnValue == "솔로" :
+            value = 1
+        elif btnValue == "그룹" :
+            value = 2
+        elif btnValue == "기타" :
+            value = 3
+    elif step == 3 :
+        col = '6'
+        if btnValue == "발라드" :
+            value = 1
+        elif btnValue == "댄스" :
+            value = 2
+        elif btnValue == "랩/힙합" :
+            value = 3
+        elif btnValue == "R&B/Soul" :
+            value = 4
+        elif btnValue == "인디음악" :
+            value = 5
+        elif btnValue == "록/메탈" :
+            value = 6
+        elif btnValue == "트로트" :
+            value = 7
+        elif btnValue == "포크/블루스" :
+            value = 8
+    elif step == 4 :
+        col = '15'
+        value = btnValue[0:3]
+    elif step == 5 :
+        col = '4'
+    elif step == 6 :
+        col = '9'
+    elif step == 7 :
+        col = '11'
+        if btnValue == "자극적인" :
+            value = 1
+        elif btnValue == "화난" :
+            value = 2
+        elif btnValue == "긴장되는" :
+            value = 3
+        elif btnValue == "슬픈" :
+            value = 4
+        elif btnValue == "지루한" :
+            value = 5
+        elif btnValue == "졸린" :
+            value = 6
+        elif btnValue == "잔잔한" :
+            value = 7
+        elif btnValue == "평화로운" :
+            value = 8
+        elif btnValue == "느긋한" :
+            value = 9
+        elif btnValue == "기쁜" :
+            value = 10
+        elif btnValue == "행복한" :
+            value = 11
+        elif btnValue == "신나는" :
+            value = 12
+    elif step == 8 :
+        col = '10'
+        value = btnValue
+
+    print(col)
+    print(value)
+
+    if step == 4 :
+        idx = sub_list[sub_list[col] not in str(value)].index
+    elif step == 5 or step == 6 :
+        if btnValue == "예" :
+            idx = sub_list[sub_list[col] is None | sub_list[col] == ""].index
+        elif btnValue == "아니요" :
+            idx = sub_list[sub_list[col] is not None & sub_list[col] != ""].index
+    else :
+        idx = sub_list[sub_list[col] != int(value)].index
+    print(idx)
+    sub_list = sub_list.drop(idx)
+    print(sub_list)
+    session[socket_id]['step'] = step + 1
 
 # 접속하는 url
 @app.route('/song-info', methods=['GET'])
@@ -162,6 +265,15 @@ def on_join(data):
     session[socket_id]['song_list'] = song_list
     session[socket_id]['step'] = 1
 
+    global sub_list
+    sub_list = pd.DataFrame(song_list)
+    # sub_list = pd.DataFrame(song_list, columns=['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14'])
+    sub_list.columns = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14']
+    sub_list['15'] = sub_list['5'].dt.year
+    # for i in sub_list.index :
+        # sub_list['5'][i] = sub_list['5'][i].dt.
+    print(song_list)
+    print(sub_list)
 
 @socketIo.on('answer', namespace='/prediction')
 def answerRequest(ans):
@@ -173,6 +285,9 @@ def answerRequest(ans):
         "type": "1",
         "result": ans
     }
+
+    filterList(ans)
+
     # data = {
     #             "type" : "1",
     #             "step": "2",
@@ -187,7 +302,7 @@ def answerRequest(ans):
     #             "songId" : Result.getSongId()
     #         }
 
-    print(data)
+    # print(data)
     # 보내는 데이터
     emit('answer', data, to=socket_id)
 
@@ -265,7 +380,7 @@ def make_question(data):
             "question_type_name": question_type_name[step - 1],  # 질문에 나올 질문할 속성 명
             "question_type": question_type[step - 1],  # 답변으로 표시될 노래 속성값들
         }
-        session[socket_id]['step'] = step + 1
+
 
     emit('response', data, to=socket_id)
 
@@ -275,7 +390,8 @@ if __name__ == "__main__":
     db = DbConnector()
     song_list = db.select_all()
     print(len(song_list))
-    socketIo.run(app)
+    # socketIo.run(app)
+    socketIo.run(app, host='192.168.0.4', port=5000)
 
 # app.run(debug=True)
 # host 등을 직접 지정하고 싶다면
