@@ -8,7 +8,8 @@
 - input
   - join 
     data = {socketId : socket.id}
-    
+   
+  - answer
         data = {
             "btnValue" : "버튼 값",
             "socketId" : "소켓 id 문자열"
