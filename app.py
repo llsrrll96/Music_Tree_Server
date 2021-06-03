@@ -12,6 +12,7 @@ import musicInsert2
 import question
 import result_manager
 import pandas as pd
+import datetime
 from db_connector import DbConnector
 from lyrics_find import LyricsFind
 
@@ -135,8 +136,8 @@ def filterList(data):
         elif btnValue == "포크/블루스" :
             value = 8
     elif step == 4 :
-        col = '15'
-        value = btnValue[0:3]
+        col = '5'
+        value = str(btnValue)[0:3]
     elif step == 5 :
         col = '4'
     elif step == 6 :
@@ -175,7 +176,7 @@ def filterList(data):
     print(value)
 
     if step == 4 :
-        idx = sub_list[sub_list[col] not in str(value)].index
+        idx = sub_list[str(sub_list[col]) != str(value)].index
     elif step == 5 or step == 6 :
         if btnValue == "예" :
             idx = sub_list[sub_list[col] is None | sub_list[col] == ""].index
@@ -267,12 +268,13 @@ def on_join(data):
 
     global sub_list
     sub_list = pd.DataFrame(song_list)
-    # sub_list = pd.DataFrame(song_list, columns=['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14'])
     sub_list.columns = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14']
-    sub_list['15'] = sub_list['5'].dt.year
-    # for i in sub_list.index :
-        # sub_list['5'][i] = sub_list['5'][i].dt.
-    print(song_list)
+    sub_list['5'] = pd.to_datetime(sub_list['5'])
+    sub_list['5'] = sub_list['5'].dt.year
+    for i in sub_list.index :
+        sub_list['5'][i] = str(sub_list['5'][i])[0:3]
+
+    # print(song_list)
     print(sub_list)
 
 @socketIo.on('answer', namespace='/prediction')
@@ -391,7 +393,7 @@ if __name__ == "__main__":
     song_list = db.select_all()
     print(len(song_list))
     # socketIo.run(app)
-    socketIo.run(app, host='192.168.0.4', port=5000)
+    # socketIo.run(app, host='192.168.0.4', port=5000)
 
 # app.run(debug=True)
 # host 등을 직접 지정하고 싶다면
