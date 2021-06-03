@@ -183,7 +183,7 @@ def filterList(data):
         elif btnValue == "아니요" :
             idx = sub_list[sub_list[col] is not None & sub_list[col] != ""].index
     else :
-        idx = sub_list[sub_list[col] != int(value)].index
+        idx = sub_list[str(sub_list[col]) != str(value)].index
     print(idx)
     sub_list = sub_list.drop(idx)
     print(sub_list)
