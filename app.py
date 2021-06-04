@@ -31,7 +31,6 @@ cors = CORS(app, resources={
 })
 socketIo = SocketIO(app, cors_allowed_origins="*")
 
-sub_list = []
 ## 관리자 #####################################################
 
 @app.route("/")
@@ -95,7 +94,7 @@ def filterList(data):
     btnValue = data["btnValue"]
     print(step)
     print(btnValue)
-    global sub_list
+    sub_list = session[socket_id]['sub_list']
     print(sub_list)
     col = -1
     value = ""
@@ -267,7 +266,6 @@ def on_join(data):
     session[socket_id]['song_list'] = copy.deepcopy(song_list)
     session[socket_id]['step'] = 1
 
-    global sub_list
     sub_list = pd.DataFrame(song_list)
     sub_list.columns = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14']
     sub_list['5'] = pd.to_datetime(sub_list['5'])
@@ -277,6 +275,7 @@ def on_join(data):
 
     # print(song_list)
     print(sub_list)
+    session[socket_id]['sub_list'] = copy.deepcopy(sub_list)
 
 @socketIo.on('answer', namespace='/prediction')
 def answerRequest(ans):
