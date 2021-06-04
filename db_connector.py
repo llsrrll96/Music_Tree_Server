@@ -25,9 +25,10 @@ class DbConnector:
         self.connect()
         try:
             with self.connection.cursor() as cursor:
-                sql = 'SELECT title FROM music_tree.song LIMIT %s'
+                sql = 'SELECT * FROM music_tree.song LIMIT %s'
                 cursor.execute(sql, n)
                 result = cursor.fetchall()
+                return result
         finally:
             self.close()
 
@@ -45,4 +46,4 @@ class DbConnector:
 
 if __name__ == '__main__':
     db = DbConnector()
-    print(len(db.select_ballad(1)))
+    print(db.select_ballad(5))
