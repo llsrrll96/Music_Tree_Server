@@ -386,12 +386,15 @@ def make_question(data):
 
     if step == 8:
         song_list = session[socket_id]['song_list']
-        relevance = []
-        for i in song_list.index:
-            relevance.append(song_list['10'][i])
-            if len(relevance) == 10:
-                break
-        question_type[7] = relevance
+        if len(song_list) == 0:
+            step += 1
+        else:
+            relevance = []
+            for i in song_list.index:
+                relevance.append(song_list['10'][i])
+                if len(relevance) == 10:
+                    break
+            question_type[7] = relevance
 
     if step == 9:
         data= {
