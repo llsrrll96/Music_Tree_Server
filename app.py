@@ -386,15 +386,15 @@ def make_question(data):
     
     isNone = False  # song_list가 비어있는지 여부
     if step == 8:
-        song_list = session[socket_id]['song_list']
-        if len(song_list) == 0:
+        sub_list = session[socket_id]['song_list']
+        if len(sub_list) == 0:
             # song_list가 빈 경우 관련성 질문 X, 다음 step ( 가사 검색 ) 으로 넘어감
             step += 1
             isNone = True
         else:
             relevance = []
-            for i in song_list.index:
-                relevance.append(song_list['10'][i])
+            for i in sub_list.index:
+                relevance.append(sub_list['10'][i])
                 if len(relevance) == 10:
                     break
             question_type[7] = relevance
