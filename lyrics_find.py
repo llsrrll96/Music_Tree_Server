@@ -75,6 +75,27 @@ class LyricsFind:
 
         return song_id
 
+    def df_to_dict(self, df):
+        sub_list = df.to_dict('records')
+        for i in range(len(sub_list)):
+            sub_list[i]['song_id'] = sub_list[i].pop('0')
+            sub_list[i]['title'] = sub_list[i].pop('1')
+            sub_list[i]['artist'] = sub_list[i].pop('2')
+            sub_list[i]['album'] = sub_list[i].pop('3')
+            sub_list[i]['ost'] = sub_list[i].pop('4')
+            sub_list[i]['rel_date'] = sub_list[i].pop('5')
+            sub_list[i]['genre'] = sub_list[i].pop('6')
+            sub_list[i]['group_type'] = sub_list[i].pop('7')
+            sub_list[i]['gender'] = sub_list[i].pop('8')
+            sub_list[i]['feat'] = sub_list[i].pop('9')
+            sub_list[i]['relevance'] = sub_list[i].pop('10')
+            sub_list[i]['mood'] = sub_list[i].pop('11')
+            sub_list[i]['lyrics'] = sub_list[i].pop('12')
+            sub_list[i]['words'] = sub_list[i].pop('13')
+            sub_list[i]['melon_song_id'] = sub_list[i].pop('14')
+
+        return sub_list
+
 
 if __name__ == '__main__':
     # test
