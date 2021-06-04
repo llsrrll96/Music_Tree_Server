@@ -15,6 +15,7 @@ import pandas as pd
 import datetime
 from db_connector import DbConnector
 from lyrics_find import LyricsFind
+import copy
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'mysecret'
@@ -263,7 +264,7 @@ def on_join(data):
     socket_id = data["socketId"]
     join_room(socket_id)
     session[socket_id] = {}
-    session[socket_id]['song_list'] = song_list
+    session[socket_id]['song_list'] = copy.deepcopy(song_list)
     session[socket_id]['step'] = 1
 
     global sub_list
@@ -391,6 +392,8 @@ def make_question(data):
 if __name__ == "__main__":
     db = DbConnector()
     song_list = db.select_all()
+    for i in range(len(song_list)):
+        song_list[i]['words'] = song_list[i]['words'].split()
     print(len(song_list))
     # socketIo.run(app)
     # socketIo.run(app, host='192.168.0.4', port=5000)
