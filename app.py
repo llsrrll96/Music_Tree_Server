@@ -13,6 +13,8 @@ import question
 import result_manager
 import pandas as pd
 import datetime
+import numpy as np
+import math
 from db_connector import DbConnector
 from lyrics_find import LyricsFind
 import copy
@@ -94,7 +96,7 @@ def filterList(data):
     btnValue = data["btnValue"]
     print(step)
     print(btnValue)
-    sub_list = session[socket_id]['sub_list']
+    sub_list = session[socket_id]['song_list']
     print(sub_list)
     col = -1
     value = ""
@@ -109,6 +111,7 @@ def filterList(data):
             value = 3
         elif btnValue == "기타" :
             value = 0
+        idx = sub_list[sub_list[col] != int(value)].index
     elif step == 2 :
         col = '7'
         if btnValue == "솔로" :
@@ -117,6 +120,7 @@ def filterList(data):
             value = 2
         elif btnValue == "기타" :
             value = 3
+        idx = sub_list[sub_list[col] != int(value)].index
     elif step == 3 :
         col = '6'
         if btnValue == "발라드" :
@@ -135,6 +139,7 @@ def filterList(data):
             value = 7
         elif btnValue == "포크/블루스" :
             value = 8
+        idx = sub_list[sub_list[col] != int(value)].index
     elif step == 4 :
         col = '5'
         value = str(btnValue)[0:3]
@@ -168,24 +173,28 @@ def filterList(data):
             value = 11
         elif btnValue == "신나는" :
             value = 12
+        idx = sub_list[sub_list[col] != int(value)].index
     elif step == 8 :
         col = '10'
         value = btnValue
+        idx = sub_list[sub_list[col] != str(value)].index
 
     print(col)
     print(value)
 
     if step == 4 :
-        idx = sub_list[str(sub_list[col]) != str(value)].index
+        idx = sub_list[sub_list[col] != int(value)].index
     elif step == 5 or step == 6 :
         if btnValue == "예" :
-            idx = sub_list[sub_list[col] is None | sub_list[col] == ""].index
+            idx = sub_list[sub_list[col] == ""].index
         elif btnValue == "아니요" :
-            idx = sub_list[sub_list[col] is not None & sub_list[col] != ""].index
-    else :
-        idx = sub_list[str(sub_list[col]) != str(value)].index
+            idx = sub_list[sub_list[col] != ""].index
+    #else :
+    #    idx = sub_list[sub_list[col] != str(value)].index
     print(idx)
+
     sub_list = sub_list.drop(idx)
+    session[socket_id]['song_list'] = sub_list
     print(sub_list)
     session[socket_id]['step'] = step + 1
 
@@ -260,11 +269,13 @@ def disconnect():
 
 @socketIo.on('join', namespace='/prediction')
 def on_join(data):
+    print("join enter")
     socket_id = data["socketId"]
+    global song_list
+
     join_room(socket_id)
     session[socket_id] = {}
-    session[socket_id]['song_list'] = copy.deepcopy(song_list)
-    session[socket_id]['step'] = 1
+    # session[socket_id]['song_list'] = copy.deepcopy(song_list)
 
     sub_list = pd.DataFrame(song_list)
     sub_list.columns = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14']
@@ -272,10 +283,22 @@ def on_join(data):
     sub_list['5'] = sub_list['5'].dt.year
     for i in sub_list.index :
         sub_list['5'][i] = str(sub_list['5'][i])[0:3]
+        if sub_list['4'][i] is None :
+            sub_list['4'][i] = ""
+        if sub_list['9'][i] == "\r" or sub_list['9'][i] is None :
+            sub_list['9'][i] = ""
 
     # print(song_list)
-    print(sub_list)
-    session[socket_id]['sub_list'] = copy.deepcopy(sub_list)
+    print(sub_list['4'])
+    print(sub_list['9'])
+    session[socket_id]['song_list'] = copy.deepcopy(sub_list)
+    session[socket_id]['step'] = 1
+    print("test2")
+
+    data = {
+        "result": "yes"
+    }
+    emit('join_response', data, to=socket_id)
 
 @socketIo.on('answer', namespace='/prediction')
 def answerRequest(ans):
@@ -341,7 +364,6 @@ def find_lyrics(data):
 @socketIo.on('question', namespace='/prediction')
 def make_question(data):
     socket_id = data["socketId"]
-
     step = session[socket_id]['step']
 
     question_type = [[
@@ -365,8 +387,8 @@ def make_question(data):
     if step == 8:
         song_list = session[socket_id]['song_list']
         relevance = []
-        for i in song_list:
-            relevance.append(i['relevance'])
+        for i in song_list.index:
+            relevance.append(song_list['10'][i])
             if len(relevance) == 10:
                 break
         question_type[7] = relevance
@@ -395,7 +417,7 @@ if __name__ == "__main__":
         song_list[i]['words'] = song_list[i]['words'].split()
     print(len(song_list))
     # socketIo.run(app)
-    # socketIo.run(app, host='192.168.0.4', port=5000)
+    socketIo.run(app, host='192.168.234.214', port=5000)
 
 # app.run(debug=True)
 # host 등을 직접 지정하고 싶다면
