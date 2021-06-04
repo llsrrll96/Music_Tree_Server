@@ -52,7 +52,7 @@ def update_words(song_id, words):
     try:
         with db.connection.cursor() as cursor:
             sql = "update music_tree.song set words = %s where song_id=%s;"
-            result = cursor.execute(sql, words, song_id)
+            result = cursor.execute(sql, [words, song_id])
             db.connection.commit()
             return result
     finally:
@@ -64,6 +64,13 @@ def update_words_all():
     db = db_connector.DbConnector()
     song_list = db.select_all()
     for song in song_list:
-        if song['words'] is None and song['lyrics'] is not None:
+        if song['lyrics'] is not None and song['words'] is None:
             words = hannanum.nouns(song['lyrics'])
+            words = sorted(set(words))
             update_words(song['song_id'], ' '.join(words))
+
+    print('Words extraction done!')
+
+
+if __name__ == '__main__':
+    update_words_all()
