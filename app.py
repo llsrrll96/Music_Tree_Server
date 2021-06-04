@@ -339,20 +339,18 @@ def answerRequest(ans):
 def find_lyrics(data):
     socket_id = data["socketId"]
     lyrics_input = data["lyricsInput"]
-    sub_list = session[socket_id]['song_list']
+    sub_list = LyricsFind.df_to_dict(session[socket_id]['song_list'])
     song_answer_arr = []
     cnt = 0
     if lyrics_input == '':
         for i in range(len(sub_list)):
-            if cnt == 3:
-                break
             song_answer_arr.append(sub_list[i])
             cnt += 1
     else:
         lf = LyricsFind(lyrics_input, session[socket_id]['song_list'])
         song_id = lf.max_similarity()
         for i in range(len(sub_list)):
-            if song_id == sub_list['song_id'][i]:
+            if song_id == sub_list[i]['song_id']:
                 song_answer_arr.append(sub_list[i])
                 break
 
@@ -360,7 +358,8 @@ def find_lyrics(data):
         song_answer_arr[i]['url'] = result_manager.search_song_url(song_answer_arr[i]['artist'], song_answer_arr[i]['title'])
         song_answer_arr[i]['rel_date'] = str(song_answer_arr[i]['rel_date'])
 
-    answer = {'type': '3', 'song_answer_arr': song_answer_arr }
+    # answer['song_answer_arr'][0]['lyrics']의 형태로 접근
+    answer = {'type': '3', 'song_answer_arr': song_answer_arr}
     emit('answer', answer, to=socket_id)
 
 
@@ -433,7 +432,7 @@ if __name__ == "__main__":
         song_list[i]['words'] = song_list[i]['words'].split()
     print(len(song_list))
     # socketIo.run(app)
-    socketIo.run(app, host='192.168.234.243', port=5000)
+    socketIo.run(app, host='0.0.0.0', port=5000)
 
 # app.run(debug=True)
 # host 등을 직접 지정하고 싶다면
