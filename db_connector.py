@@ -25,7 +25,7 @@ class DbConnector:
         self.connect()
         try:
             with self.connection.cursor() as cursor:
-                sql = 'SELECT * FROM music_tree.song LIMIT %s'
+                sql = 'SELECT * FROM music_tree.song WHERE genre = 1 LIMIT %s'
                 cursor.execute(sql, n)
                 result = cursor.fetchall()
                 return result
