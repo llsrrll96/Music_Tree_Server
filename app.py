@@ -383,11 +383,14 @@ def make_question(data):
     ], [  # 관련성.
     ]]
     question_type_name = ["성별", "활동유형", "장르", "년도", " OST여부", "피처링여부", "분위기", "관련성"]
-
+    
+    isNone = False  # song_list가 비어있는지 여부
     if step == 8:
         song_list = session[socket_id]['song_list']
         if len(song_list) == 0:
+            # song_list가 빈 경우 관련성 질문 X, 다음 step ( 가사 검색 ) 으로 넘어감
             step += 1
+            isNone = True
         else:
             relevance = []
             for i in song_list.index:
@@ -397,9 +400,16 @@ def make_question(data):
             question_type[7] = relevance
 
     if step == 9:
-        data= {
-            "type":"2"
-        }
+        if isNone:
+            # song_list가 빈 경우 실패 메세지도 같이 전송
+            data = {
+                "type": "2",
+                "result": "failure"
+            }
+        else:
+            data= {
+                "type":"2"
+            }
     else:
         data = {
             "type": "1",
