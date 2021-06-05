@@ -10,16 +10,38 @@ from db_connector import DbConnector
 # lyrics_input : '니 손 꼭 잡고 그냥 이 길을 걸었으면 내게'
 # lyrics_list : [{'song_id':1, 'words':['a', 'b', 'c'], 'lyrics':'asdjklfasdkfj'}, {'song_id':2, 'words':['b', 'c', 'd'], 'lyrics':'zcvmzncv,msdlf'}, ...]
 
-class LyricsFind:
-    def __init__(self, lyrics_input, lyrics_list):
-        self.lyrics_input = lyrics_input
-        self.lyrics_list = lyrics_list
+def df_to_dict(sub_list):
+    for i in range(len(sub_list)):
+        sub_list[i]['song_id'] = sub_list[i].pop('0')
+        sub_list[i]['title'] = sub_list[i].pop('1')
+        sub_list[i]['artist'] = sub_list[i].pop('2')
+        sub_list[i]['album'] = sub_list[i].pop('3')
+        sub_list[i]['ost'] = sub_list[i].pop('4')
+        sub_list[i]['rel_date'] = sub_list[i].pop('5')
+        sub_list[i]['genre'] = sub_list[i].pop('6')
+        sub_list[i]['group_type'] = sub_list[i].pop('7')
+        sub_list[i]['gender'] = sub_list[i].pop('8')
+        sub_list[i]['feat'] = sub_list[i].pop('9')
+        sub_list[i]['relevance'] = sub_list[i].pop('10')
+        sub_list[i]['mood'] = sub_list[i].pop('11')
+        sub_list[i]['lyrics'] = sub_list[i].pop('12')
+        sub_list[i]['words'] = sub_list[i].pop('13')
+        sub_list[i]['melon_song_id'] = sub_list[i].pop('14')
 
-    def compare_lyrics(self, lyrics):
-        for l in self.lyrics_list:
-            if l['lyrics'].find(lyrics) != -1:
-                print(l['song_id'], l['title'], '노래와 매칭됨')
-                return l['song_id']
+    return sub_list
+
+
+class LyricsFind:
+    def __init__(self, lyrics_input, song_list):
+        self.lyrics_input = lyrics_input
+        self.song_list = song_list
+
+    def compare_lyrics(self):
+        for song in self.song_list:
+            print(self.lyrics_input, song['lyrics'])
+            if song['lyrics'] is not None and song['lyrics'].find(self.lyrics_input) != -1:
+                print(song['song_id'], song['title'], '노래와 매칭됨')
+                return song['song_id']
 
         return 0
 
@@ -52,49 +74,28 @@ class LyricsFind:
     def max_similarity(self):
         konlpy = Hannanum()
         l = konlpy.nouns(self.lyrics_input)
-        lyrics_list = self.lyrics_list
+        song_list = self.song_list
         song_id = 0
         max_similarity = 0.0
 
-        result = self.compare_lyrics(self.lyrics_input)
+        result = self.compare_lyrics()
         if result > 0:
             return result
 
         print("입력된 가사의 단어 배열: ", l)
-        for lyrics in lyrics_list:
-            if lyrics['words'] is None:
-                lyrics['words'] = konlpy.nouns(lyrics['lyrics'])
+        for song in song_list:
+            if song['words'] is None:
+                song['words'] = konlpy.nouns(song['lyrics'])
 
-            print("song_id, title: ", lyrics['song_id'], lyrics['title'])
-            temp = self.measure_similarity(l, lyrics['words'])
+            print("song_id, title: ", song['song_id'], song['title'])
+            temp = self.measure_similarity(l, song['words'])
             print("코사인 유사도: ", temp)
             print()
             if temp > max_similarity:
-                song_id = lyrics['song_id']
+                song_id = song['song_id']
                 max_similarity = temp
 
         return song_id
-
-    def df_to_dict(self, df):
-        sub_list = df.to_dict('records')
-        for i in range(len(sub_list)):
-            sub_list[i]['song_id'] = sub_list[i].pop('0')
-            sub_list[i]['title'] = sub_list[i].pop('1')
-            sub_list[i]['artist'] = sub_list[i].pop('2')
-            sub_list[i]['album'] = sub_list[i].pop('3')
-            sub_list[i]['ost'] = sub_list[i].pop('4')
-            sub_list[i]['rel_date'] = sub_list[i].pop('5')
-            sub_list[i]['genre'] = sub_list[i].pop('6')
-            sub_list[i]['group_type'] = sub_list[i].pop('7')
-            sub_list[i]['gender'] = sub_list[i].pop('8')
-            sub_list[i]['feat'] = sub_list[i].pop('9')
-            sub_list[i]['relevance'] = sub_list[i].pop('10')
-            sub_list[i]['mood'] = sub_list[i].pop('11')
-            sub_list[i]['lyrics'] = sub_list[i].pop('12')
-            sub_list[i]['words'] = sub_list[i].pop('13')
-            sub_list[i]['melon_song_id'] = sub_list[i].pop('14')
-
-        return sub_list
 
 
 if __name__ == '__main__':
