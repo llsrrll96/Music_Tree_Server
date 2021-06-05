@@ -3,6 +3,9 @@ from selenium import webdriver
 from bs4 import BeautifulSoup
 import time
 import os
+
+from webdriver_manager.chrome import ChromeDriverManager
+
 import db_connector
 
 count = 0
@@ -13,7 +16,8 @@ def openDriver1(id):
     webdriver_options = webdriver.ChromeOptions()
     webdriver_options.add_argument('headless')
     webdriver_options.add_argument('no-sandbox')
-    driver = webdriver.Chrome(options=webdriver_options)
+    # driver = webdriver.Chrome(options=webdriver_options)
+    driver = webdriver.Chrome(ChromeDriverManager().install())
     driver.implicitly_wait(3)
     driver.get(url)
     time.sleep(1)

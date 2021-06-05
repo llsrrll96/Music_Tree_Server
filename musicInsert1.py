@@ -2,6 +2,9 @@ from selenium import webdriver
 from bs4 import BeautifulSoup
 import time
 import csv
+
+from webdriver_manager.chrome import ChromeDriverManager
+
 import db_connector
 import os
 
@@ -18,8 +21,9 @@ def openDriver(startIndex, genre):
     webdriver_options = webdriver.ChromeOptions()
     webdriver_options.add_argument('headless')
     webdriver_options.add_argument('no-sandbox')
-    driver = webdriver.Chrome(options=webdriver_options)
-    # driver = webdriver.Chrome()
+    # driver = webdriver.Chrome(options=webdriver_options)
+    driver = webdriver.Chrome(ChromeDriverManager().install())
+
     driver.implicitly_wait(3)
     driver.get(url)
     time.sleep(1)
