@@ -16,7 +16,7 @@ import datetime
 import numpy as np
 import math
 from db_connector import DbConnector
-from lyrics_find import LyricsFind
+import lyrics_find
 import copy
 
 app = Flask(__name__)
@@ -32,6 +32,7 @@ cors = CORS(app, resources={
     r"/admin/modify": {"origin": "*"}
 })
 socketIo = SocketIO(app, cors_allowed_origins="*")
+
 
 ## 관리자 #####################################################
 
@@ -88,6 +89,7 @@ def songAdd2():
         }
         return data
 
+
 # 목록을 확인한 관리자가 추가를 승인할 경우, 해당 목록들의 곡들이 DB에 업데이트 된다.
 # @app.route('/filterList', methods=["GET"])
 def filterList(data):
@@ -101,80 +103,80 @@ def filterList(data):
     col = -1
     value = ""
 
-    if step == 1 :
+    if step == 1:
         col = '8'
-        if btnValue == "남성" :
+        if btnValue == "남성":
             value = 1
-        elif btnValue == "여성" :
+        elif btnValue == "여성":
             value = 2
-        elif btnValue == "혼성" :
+        elif btnValue == "혼성":
             value = 3
-        elif btnValue == "기타" :
+        elif btnValue == "기타":
             value = 0
         idx = sub_list[sub_list[col] != int(value)].index
-    elif step == 2 :
+    elif step == 2:
         col = '7'
-        if btnValue == "솔로" :
+        if btnValue == "솔로":
             value = 1
-        elif btnValue == "그룹" :
+        elif btnValue == "그룹":
             value = 2
-        elif btnValue == "기타" :
+        elif btnValue == "기타":
             value = 3
         idx = sub_list[sub_list[col] != int(value)].index
-    elif step == 3 :
+    elif step == 3:
         col = '6'
-        if btnValue == "발라드" :
+        if btnValue == "발라드":
             value = 1
-        elif btnValue == "댄스" :
+        elif btnValue == "댄스":
             value = 2
-        elif btnValue == "랩/힙합" :
+        elif btnValue == "랩/힙합":
             value = 3
-        elif btnValue == "R&B/Soul" :
+        elif btnValue == "R&B/Soul":
             value = 4
-        elif btnValue == "인디음악" :
+        elif btnValue == "인디음악":
             value = 5
-        elif btnValue == "록/메탈" :
+        elif btnValue == "록/메탈":
             value = 6
-        elif btnValue == "트로트" :
+        elif btnValue == "트로트":
             value = 7
-        elif btnValue == "포크/블루스" :
+        elif btnValue == "포크/블루스":
             value = 8
         idx = sub_list[sub_list[col] != int(value)].index
-    elif step == 4 :
+    elif step == 4:
         col = '5'
         value = str(btnValue)[0:3]
-    elif step == 5 :
+    elif step == 5:
         col = '4'
-    elif step == 6 :
+    elif step == 6:
         col = '9'
-    elif step == 7 :
+    elif step == 7:
         col = '11'
-        if btnValue == "자극적인" :
+        if btnValue == "자극적인":
             value = 1
-        elif btnValue == "화난" :
+        elif btnValue == "화난":
             value = 2
-        elif btnValue == "긴장되는" :
+        elif btnValue == "긴장되는":
             value = 3
-        elif btnValue == "슬픈" :
+        elif btnValue == "슬픈":
             value = 4
-        elif btnValue == "지루한" :
+        elif btnValue == "지루한":
             value = 5
-        elif btnValue == "졸린" :
+        elif btnValue == "졸린":
             value = 6
-        elif btnValue == "잔잔한" :
+        elif btnValue == "잔잔한":
             value = 7
-        elif btnValue == "평화로운" :
+        elif btnValue == "평화로운":
             value = 8
-        elif btnValue == "느긋한" :
+        elif btnValue == "느긋한":
             value = 9
-        elif btnValue == "기쁜" :
+        elif btnValue == "기쁜":
             value = 10
-        elif btnValue == "행복한" :
+        elif btnValue == "행복한":
             value = 11
-        elif btnValue == "신나는" :
+        elif btnValue == "신나는":
             value = 12
         idx = sub_list[sub_list[col] != int(value)].index
-    elif step == 8 :
+    elif step == 8:
         col = '10'
         value = btnValue
         idx = sub_list[sub_list[col] != str(value)].index
@@ -182,14 +184,14 @@ def filterList(data):
     print(col)
     print(value)
 
-    if step == 4 :
+    if step == 4:
         idx = sub_list[sub_list[col] != int(value)].index
-    elif step == 5 or step == 6 :
-        if btnValue == "예" :
+    elif step == 5 or step == 6:
+        if btnValue == "예":
             idx = sub_list[sub_list[col] == ""].index
-        elif btnValue == "아니요" :
+        elif btnValue == "아니요":
             idx = sub_list[sub_list[col] != ""].index
-    #else :
+    # else :
     #    idx = sub_list[sub_list[col] != str(value)].index
     print(idx)
 
@@ -197,6 +199,7 @@ def filterList(data):
     session[socket_id]['song_list'] = sub_list
     print(sub_list)
     session[socket_id]['step'] = step + 1
+
 
 # 접속하는 url
 @app.route('/song-info', methods=['GET'])
@@ -253,8 +256,7 @@ def admin_update_words():
     return jsonify({"result": 1})
 
 
-## 소켓 #####################################################
-
+# 소켓 #####################################################
 # socket_id : 유저를 구분하는 id
 # session[socket_id]의 형태로 바로 접근하도록 dictionary로 설정
 # session[socket_id]['song_list'] : 노래 정보 배열 저장
@@ -281,11 +283,11 @@ def on_join(data):
     sub_list.columns = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14']
     sub_list['5'] = pd.to_datetime(sub_list['5'])
     sub_list['5'] = sub_list['5'].dt.year
-    for i in sub_list.index :
+    for i in sub_list.index:
         sub_list['5'][i] = str(sub_list['5'][i])[0:3]
-        if sub_list['4'][i] is None :
+        if sub_list['4'][i] is None:
             sub_list['4'][i] = ""
-        if sub_list['9'][i] == "\r" or sub_list['9'][i] is None :
+        if sub_list['9'][i] == "\r" or sub_list['9'][i] is None:
             sub_list['9'][i] = ""
 
     # print(song_list)
@@ -299,6 +301,7 @@ def on_join(data):
         "result": "yes"
     }
     emit('join_response', data, to=socket_id)
+
 
 @socketIo.on('answer', namespace='/prediction')
 def answerRequest(ans):
@@ -339,15 +342,17 @@ def answerRequest(ans):
 def find_lyrics(data):
     socket_id = data["socketId"]
     lyrics_input = data["lyricsInput"]
-    sub_list = LyricsFind.df_to_dict(session[socket_id]['song_list'])
+    sub_list = lyrics_find.df_to_dict(session[socket_id]['song_list'].to_dict('records'))
+    session[socket_id]['song_list'] = sub_list
     song_answer_arr = []
     cnt = 0
+
     if lyrics_input == '':
         for i in range(len(sub_list)):
             song_answer_arr.append(sub_list[i])
             cnt += 1
     else:
-        lf = LyricsFind(lyrics_input, session[socket_id]['song_list'])
+        lf = lyrics_find.LyricsFind(lyrics_input, sub_list)
         song_id = lf.max_similarity()
         for i in range(len(sub_list)):
             if song_id == sub_list[i]['song_id']:
@@ -386,7 +391,7 @@ def make_question(data):
     ], [  # 관련성.
     ]]
     question_type_name = ["성별", "활동유형", "장르", "년도", " OST여부", "피처링여부", "분위기", "관련성"]
-    
+
     isNone = False  # song_list가 비어있는지 여부
     if step == 8:
         sub_list = session[socket_id]['song_list']
@@ -410,8 +415,8 @@ def make_question(data):
                 "result": "failure"
             }
         else:
-            data= {
-                "type":"2"
+            data = {
+                "type": "2"
             }
     else:
         data = {
@@ -431,7 +436,6 @@ if __name__ == "__main__":
     for i in range(len(song_list)):
         song_list[i]['words'] = song_list[i]['words'].split()
     print(len(song_list))
-    # socketIo.run(app)
     socketIo.run(app, host='0.0.0.0', port=5000)
 
 # app.run(debug=True)
