@@ -1,6 +1,7 @@
 import time
 from selenium import webdriver
 from selenium.common.exceptions import InvalidSelectorException
+from webdriver_manager.chrome import ChromeDriverManager
 
 
 def search_song_url(artist, title):
@@ -10,7 +11,8 @@ def search_song_url(artist, title):
         chrome_options.add_argument('headless')
         chrome_options.add_argument('--disable-gpu')
 
-        driver = webdriver.Chrome(executable_path='chromedriver', chrome_options=chrome_options)
+        # driver = webdriver.Chrome(executable_path='chromedriver', chrome_options=chrome_options)
+        driver = webdriver.Chrome(ChromeDriverManager().install())
         url = 'https://www.youtube.com/results?search_query=' + title + '+' + artist
 
         driver.get(url=url)
