@@ -20,13 +20,13 @@ class DbConnector:
     def close(self):
         self.connection.close()
 
-    # select 예시
-    def select_ballad(self, n):
+    # 예시 만들 때 사용
+    def select_ballad(self, mood, n):
         self.connect()
         try:
             with self.connection.cursor() as cursor:
-                sql = 'SELECT * FROM music_tree.song WHERE genre = 1 LIMIT %s'
-                cursor.execute(sql, n)
+                sql = 'SELECT * FROM music_tree.song WHERE genre = 1 AND mood = %s LIMIT %s'
+                cursor.execute(sql, [mood, n])
                 result = cursor.fetchall()
                 return result
         finally:
