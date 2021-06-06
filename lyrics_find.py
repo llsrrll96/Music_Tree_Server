@@ -38,7 +38,6 @@ class LyricsFind:
 
     def compare_lyrics(self):
         for song in self.song_list:
-            print(self.lyrics_input, song['lyrics'])
             if song['lyrics'] is not None and song['lyrics'].find(self.lyrics_input) != -1:
                 print(song['song_id'], song['title'], '노래와 매칭됨')
                 return song['song_id']
@@ -93,17 +92,20 @@ class LyricsFind:
             print()
             if temp > max_similarity:
                 song_id = song['song_id']
+                # title 출력을 원한다면 주석해제
+                # title = song['title']
                 max_similarity = temp
 
-        return song_id
+        # title 출력을 원한다면 주석해제
+        return song_id  # , title
 
 
 if __name__ == '__main__':
     # test
-    # 원 가사: 밤하늘의 별을 따서 너에게 줄래
-    lyrics_input = '밤하늘의 별을 따서 너에게 줄래'
+    lyrics_input = '아침을 깨우는 니 생각에'
     db = DbConnector()
-    song_list = db.select_ballad(10)
+    # 1번째 인자: mood, 2번째 인자: limit
+    song_list = db.select_ballad(8, 10)
     for i in range(len(song_list)):
         song_list[i]['words'] = song_list[i]['words'].split()
 
