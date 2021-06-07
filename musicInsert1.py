@@ -4,6 +4,7 @@ import time
 import csv
 
 from webdriver_manager.chrome import ChromeDriverManager
+import chromedriver_autoinstaller
 
 import db_connector
 import os
@@ -11,18 +12,29 @@ import os
 mList = []
 count = 0
 
+def initialize() :
+    chrome_ver = chromedriver_autoinstaller.get_chrome_version().split('.')[0]  # 크롬드라이버 버전 확인
+
+    try:
+        driver = webdriver.Chrome(f'./{chrome_ver}/chromedriver.exe')
+    except:
+        chromedriver_autoinstaller.install(True)
+        driver = webdriver.Chrome(f'./{chrome_ver}/chromedriver.exe')
+
+    driver.implicitly_wait(10)
+
 def openDriver(startIndex, genre):
     #startIndex = 1
     url = 'https://www.melon.com/genre/song_list.htm?gnrCode=' + genre\
           + '#params%5BgnrCode%5D=' + genre\
           + '&params%5BdtlGnrCode%5D=GN0501&params%5BorderBy%5D=NEW&params%5BsteadyYn%5D=N&po=pageObj&startIndex='\
-          + str(startIndex);
+          + str(startIndex)
     # test = "https://www.melon.com/genre/song_list.htm?gnrCode=GN0200#params%5BgnrCode%5D=GN0200&params%5BdtlGnrCode%5D=&params%5BorderBy%5D=POP&params%5BsteadyYn%5D=N&po=pageObj&startIndex=1";
     webdriver_options = webdriver.ChromeOptions()
     webdriver_options.add_argument('headless')
     webdriver_options.add_argument('no-sandbox')
     # driver = webdriver.Chrome(options=webdriver_options)
-    driver = webdriver.Chrome(ChromeDriverManager().install())
+    driver = webdriver.Chrome(ChromeDriverManager().install(), options=webdriver_options)
 
     driver.implicitly_wait(3)
     driver.get(url)
@@ -35,8 +47,8 @@ def searchMelon(driver, grNumber):
     tags = soup.find_all(class_='wrap_song_info')
 
     j = 0
-    global count;
-    global mList;
+    global count
+    global mList
     maxCount = 1000
 
     for i in tags:
@@ -110,6 +122,8 @@ def insertMusic(page, grNumber) :
     if os.path.exists('finalMelonMusic.csv'):
         os.remove('finalMelonMusic.csv')
 
+    initialize()
+
     endPoint = 1 + (page * 50)
     genre = "GN0" + str(grNumber) + "00"
     for k in range(1, endPoint, 50) :
@@ -138,4 +152,4 @@ def insertMusic(page, grNumber) :
     else :
         return -1
 
-# insertMusic(1, 2)
+insertMusic(1, 2)
