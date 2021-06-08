@@ -285,7 +285,7 @@ def on_join(data):
     sub_list['5'] = sub_list['5'].dt.year
     for i in sub_list.index:
         sub_list['5'][i] = str(sub_list['5'][i])[0:3]
-        if sub_list['4'][i] is None:
+        if sub_list['4'][i] != 1.0:
             sub_list['4'][i] = ""
         if sub_list['9'][i] == "\r" or sub_list['9'][i] is None:
             sub_list['9'][i] = ""
