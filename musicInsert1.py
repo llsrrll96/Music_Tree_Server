@@ -12,6 +12,7 @@ import os
 mList = []
 count = 0
 
+# 크롬드라이버 오토설치
 def initialize() :
     chrome_ver = chromedriver_autoinstaller.get_chrome_version().split('.')[0]  # 크롬드라이버 버전 확인
 
@@ -23,13 +24,14 @@ def initialize() :
 
     driver.implicitly_wait(10)
 
+# 크롬드라이버를 통해 웹에 접근
 def openDriver(startIndex, genre):
     #startIndex = 1
     url = 'https://www.melon.com/genre/song_list.htm?gnrCode=' + genre\
           + '#params%5BgnrCode%5D=' + genre\
           + '&params%5BdtlGnrCode%5D=GN0501&params%5BorderBy%5D=NEW&params%5BsteadyYn%5D=N&po=pageObj&startIndex='\
           + str(startIndex)
-    # test = "https://www.melon.com/genre/song_list.htm?gnrCode=GN0200#params%5BgnrCode%5D=GN0200&params%5BdtlGnrCode%5D=&params%5BorderBy%5D=POP&params%5BsteadyYn%5D=N&po=pageObj&startIndex=1";
+    # test = "https://www.melon.com/genre/song_list.htm?gnrCode=GN0200#params%5BgnrCode%5D=GN0200&params%5BdtlGnrCode%5D=&params%5BorderBy%5D=POP&params%5BsteadyYn%5D=N&po=pageObj&startIndex=1"
     webdriver_options = webdriver.ChromeOptions()
     webdriver_options.add_argument('headless')
     webdriver_options.add_argument('no-sandbox')
@@ -41,6 +43,7 @@ def openDriver(startIndex, genre):
     time.sleep(1)
     return driver
 
+# 노래정보를 크롤링해오는 함수
 def searchMelon(driver, grNumber):
     html = driver.page_source
     soup = BeautifulSoup(html, 'html.parser')
@@ -87,7 +90,7 @@ def searchMelon(driver, grNumber):
             j += 1
             pass
         if count == maxCount :
-            break;
+            break
 
     driver.quit()
     return mList
@@ -99,8 +102,8 @@ def saveToFile(filename, mList):
         writer = csv.writer(f)
         writer.writerows(mList)
 
+# 중복값 체크를 위해 id값을 가져옴
 def songidSearch():
-    # 중복값 체크를 위해 id값을 가져옴
     db = db_connector.DbConnector()
     db.connect()
     try:

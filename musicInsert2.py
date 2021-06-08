@@ -68,7 +68,7 @@ def searchMelon2(driver, data, k):
     genderType = 0
 
     for i in groupGenderType:
-        typeTemp = i.text;
+        typeTemp = i.text
         if typeTemp.find('\t') != -1 :
             typeTemp = typeTemp.replace('\t', '').replace('\n', '').replace('"', '')
             typeList = typeTemp.split('|')
